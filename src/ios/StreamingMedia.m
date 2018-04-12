@@ -200,7 +200,24 @@ NSString * const DEFAULT_IMAGE_SCALE = @"center";
 -(void)startPlayer:(NSString*)uri {
 	NSURL *url = [NSURL URLWithString:uri];
 
-	moviePlayer =  [[MPMoviePlayerController alloc] initWithContentURL:url];
+	//NSString *filePath = [[NSBundle mainBundle] pathForResource:uri ofType:@"mp4"];
+	//NSString *filePath1 = [[NSBundle mainBundle] pathForResource:@"video" ofType:@"mp4"];
+
+	//NSString *filePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:uri];
+
+	//My additions to make this video play
+#ifdef __CORDOVA_4_0_0
+	NSURL* baseUrl = [self.webViewEngine URL];
+#else
+	NSURL* baseUrl = [self.webView.request URL];
+#endif
+	uri = [uri stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+	NSURL* absoluteURL = [[NSURL URLWithString:uri relativeToURL:baseUrl] absoluteURL];
+
+
+	//url = [NSURL URLWithString:filePath];
+
+	moviePlayer =  [[MPMoviePlayerController alloc] initWithContentURL:absoluteURL];
 
 	// Listen for playback finishing
 	[[NSNotificationCenter defaultCenter] addObserver:self
